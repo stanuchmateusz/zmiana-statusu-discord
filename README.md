@@ -2,7 +2,8 @@
 
 Program pomaga w dynamicznej zmianie statusu discorda
 
-Do prawidłowego dzaiałania programu wymagane są trzy informacje o użydkowniku
+W pliku tekst.txt należy umieścić tekst do wyświetlania jako status (trzeba pomiętać o limicie znaków, jedna linia to jeden status)
+Do prawidłowego dzaiałania programu wymagane są trzy informacje o użytkowniku - authorization, cookie io x-super-properties
 
 NIE NALEŻY NIKOMU UDOSTĘPNIAĆ TYCH DANYCH
 
@@ -20,3 +21,5 @@ Przycisk od nowa rozpoczyna czytanie pliku od nowa
 Przycisk rozpocznij rozpoczyna działanie
 
 Pole odstęp ustawia odstęp pomiędzy aktualizacjami statusu
+
+PRZED ZAMKNIĘCIEM PROGRAMU NALEŻY ZATRZYMAĆ ZMIANĘ STATUSU!
