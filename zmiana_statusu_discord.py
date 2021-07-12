@@ -171,7 +171,7 @@ class Application(tk.Frame):
             self.linika += 1
 
     def wczytaj_cofig(self):  # wczytanie configu
-        plik = open('config1.json')
+        plik = open('config.json')
         dane = json.load(plik)
 
         print("Wczytuję config do programu")
