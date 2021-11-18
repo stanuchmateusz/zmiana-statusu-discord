@@ -1,18 +1,15 @@
-from os import terminal_size
 import tkinter as tk
 import json
-from tkinter.constants import S
 import requests
 import re
 import threading
+from cryptography.fernet import Fernet
 
 
 class Application(tk.Frame):
 
     # zmienne
     autoryzacja = ''
-    ciastko = ''
-    sumper = ''
     status_emoji_id = '800479551762989086'
     status_emoji_name = 'CheemsBurger1'
     dziala = False
@@ -20,11 +17,14 @@ class Application(tk.Frame):
     odstep = 0.0
     linika = 0
     tablica_z_tekstem = []
-    # obecna_linia = ''
 
     def __init__(self, master=None):  # inicjalizacja
         super().__init__(master)
         self.master = master
+        # enkrypcja klucza z config.json
+        self.fernet = Fernet(
+            key="GZWKEhHGNopxRdOHS4H4IyKhLQ8lwnyU7vRLrM3sebY=".encode())  # klucz do zaszyfrowania klucza autoryzacji w pliku config.js
+
         self.tablica_z_tekstem = self.czytaj_tekst_z_pliku()
         self.wczytaj_cofig()
         self.pack()
@@ -66,7 +66,7 @@ class Application(tk.Frame):
     def akcja(self):  # po kliknięcu guzika
         print("Wczytanie danych do configu i programu")
         self.aktualizuj_config(self.wprowadzanie_autoryzacja.get(
-        ), self.wprowadzanie_ciastko.get(), self.wprowadzanie_sumper.get(), float(self.odstep_input.get()))
+        ), float(self.odstep_input.get()))
         self.wczytaj_cofig()
 
     def czytaj_tekst_z_pliku(self):
@@ -113,39 +113,19 @@ class Application(tk.Frame):
         self.wprowadzanie_autoryzacja.insert(0, self.autoryzacja)
         self.wprowadzanie_autoryzacja.grid(row=1, column=1)
 
-        self.tekst_wprowadzanie_ciastko = tk.Label(self)
-        self.tekst_wprowadzanie_ciastko['text'] = "cookie"
-        self.tekst_wprowadzanie_ciastko.grid(row=2, column=0)
-        self.wprowadzanie_ciastko = tk.Entry(self)
-        self.wprowadzanie_ciastko.insert(0, self.ciastko)
-        self.wprowadzanie_ciastko.grid(row=2, column=1)
-
-        self.tekst_wprowadzanie_sumper = tk.Label(self)
-        self.tekst_wprowadzanie_sumper['text'] = "x-super-properties"
-        self.tekst_wprowadzanie_sumper.grid(row=3, column=0)
-        self.wprowadzanie_sumper = tk.Entry(self)
-        self.wprowadzanie_sumper.insert(0, self.sumper)
-        self.wprowadzanie_sumper.grid(row=3, column=1)
-
     # aktualizacja statusu discorda
-
     def zaktualizuj_status(self, tekst, emoji_id, emoji_name):
         # print("wywołanie zaktualizuj_status()")
         glowa = {
             'accept': '*/*',
             'accept-encoding': 'gzip, deflate, br',
-            'accept-language': 'pl',
             'authorization': self.autoryzacja,
-            'content-length': '108',
             'content-type': 'application/json',
-            'cookie': self.ciastko,
             'origin': 'https://discord.com',
             'referer': 'https://discord.com',
             'sec-fetch-dest': 'empty',
             'sec-fetch-mode': 'cors',
             'sec-fetch-site': 'same-origin',
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9001 Chrome/83.0.4103.122 Electron/9.3.5 Safari/537.36',
-            'x-super-properties': self.sumper
         }
         dane = {
             'custom_status': {
@@ -154,9 +134,8 @@ class Application(tk.Frame):
                 'emoji_name': emoji_name
             }
         }
-        r = requests.patch('https://discord.com/api/v9/users/@me/settings',
-                           headers=glowa, data=json.dumps(dane))
-        # print(r)
+        requests.patch('https://discord.com/api/v9/users/@me/settings',
+                       headers=glowa, data=json.dumps(dane))
         if(self.dziala):
             if(len(self.tablica_z_tekstem) <= self.linika or self.linika == 0):
                 self.linika = 0
@@ -175,37 +154,41 @@ class Application(tk.Frame):
         dane = json.load(plik)
 
         print("Wczytuję config do programu")
-        self.autoryzacja = dane['Dane'][0]['authorization']
-        self.ciastko = dane['Dane'][0]['cookie']
-        self.sumper = dane['Dane'][0]['x-super-properties']
+
+        zakodowane = dane['Dane'][0]['authorization'].encode()
+        # self.autoryzacja = self.fernet.decrypt(zakodowane).decode()
+
+        try:
+            self.autoryzacja = self.fernet.decrypt(zakodowane).decode()
+        except Exception as e:
+            print(e)
+            self.autoryzacja = "Błąd wczytywania klucza"
+
         self.odstep = dane['Dane'][0]['odstep']
         print("Wczytano")
-        # print(self.autoryzacja)
-        # print(self.ciastko)
-        # print(self.sumper)
+        print(self.autoryzacja)
+        print(self.odstep)
         plik.close()
 
-    def aktualizuj_config(self, autoryzacja, ciastko, sumper, odstep):
+    def aktualizuj_config(self, autoryzacja, odstep):
+        autoryzacja_zakodowana = self.fernet.encrypt(autoryzacja.encode())
         siur = {}
         siur['Dane'] = []
         siur['Dane'].append({
             'odstep': odstep,
-            'authorization': autoryzacja,
-            "cookie": ciastko,
-            "x-super-properties": sumper
+            'authorization': autoryzacja_zakodowana.decode()
         })
         with open('config.json', 'w') as outfile:
             json.dump(siur, outfile)
 
-
-# def przy_zamknieciu(app):
-#     print("kutas")
-#     app.dziala = False
+    def przy_zamknieciu(self):
+        print("Closing")
+        self.dziala = False
 
 
 root = tk.Tk()
 app = Application(master=root)
-# root.protocol("WM_DELETE_WINDOW", przy_zamknieciu(app))
 app.master.title("Zmiana statusu")
 app.master.minsize(600, 300)
 app.mainloop()
+root.wm_protocol("WM_DELETE_WINDOW", app.przy_zamknieciu())
