@@ -6,9 +6,10 @@ W pliku **tekst.txt** należy umieścić tekst do wyświetlania jako status (trz
 Do prawidłowego dzaiałania programu wymagana jest informacja o użytkowniku - **authorization**
 
 **NIE NALEŻY NIKOMU UDOSTĘPNIAĆ KODU AUTORYZACJI**
+
 Program używa go jedynie do wysłania zapytania, zapisuje go jedynie w pliku config.json na Twoim komputerze.
 
-### Pierwsze uruchomienie
+# Pierwsze uruchomienie
 ```
 Aby zdobyć swoje dane należy:
 -Uruchomić konsolę developera (Shift+Cltr+I)
@@ -17,13 +18,14 @@ Aby zdobyć swoje dane należy:
 -W konsoli pojawi się aktywność 'settings'
 -Klinkąć w nią i z "Request Headers" klucz autoryzacji
 ```
-### obsługa programu
-Przycisk zapisz zapisuje dane do pliku config.js
+# obsługa programu
 
-Przycisk od nowa rozpoczyna czytanie pliku od nowa
+- Przycisk zapisz zapisuje dane do pliku config.js
 
-Przycisk rozpocznij rozpoczyna działanie
+- Przycisk od nowa rozpoczyna czytanie pliku od nowa
 
-Pole odstęp ustawia odstęp pomiędzy aktualizacjami statusu
+- Przycisk rozpocznij rozpoczyna działanie
 
-PRZED ZAMKNIĘCIEM PROGRAMU NALEŻY ZATRZYMAĆ ZMIANĘ STATUSU!
+- Pole odstęp ustawia odstęp pomiędzy aktualizacjami statusu
+
+# PRZED ZAMKNIĘCIEM PROGRAMU NALEŻY ZATRZYMAĆ ZMIANĘ STATUSU!
