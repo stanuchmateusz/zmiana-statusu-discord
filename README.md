@@ -16,11 +16,11 @@ Aby zdobyć swoje dane należy:
 -Przejść w zakładkę Network
 -Zmienić status tak jak robi się to normalnie
 -W konsoli pojawi się aktywność 'settings'
--Klinkąć w nią i z "Request Headers" klucz autoryzacji
+-Klinkąć w nią i z "Request Headers" pobrać klucz autoryzacji
 ```
-# obsługa programu
+# Obsługa programu
 
-- Przycisk zapisz zapisuje dane do pliku config.js
+- Przycisk zapisz zapisuje dane do pliku config.json
 
 - Przycisk od nowa rozpoczyna czytanie pliku od nowa
 
@@ -28,4 +28,3 @@ Aby zdobyć swoje dane należy:
 
 - Pole odstęp ustawia odstęp pomiędzy aktualizacjami statusu
 
-# PRZED ZAMKNIĘCIEM PROGRAMU NALEŻY ZATRZYMAĆ ZMIANĘ STATUSU!
